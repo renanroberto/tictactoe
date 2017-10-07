@@ -1,6 +1,26 @@
 import React from 'react'
 import '../App.css'
 
+class Board extends React.Component {
+  render () {
+    return (
+      <div className="board">
+        <div className="field"></div>
+        <div className="field"></div>
+        <div className="field"></div>
+
+        <div className="field"></div>
+        <div className="field"></div>
+        <div className="field"></div>
+
+        <div className="field"></div>
+        <div className="field"></div>
+        <div className="field"></div>
+      </div>
+    )
+  }
+}
+
 export default class Game extends React.Component {
   render () {
     return (
@@ -20,19 +40,7 @@ export default class Game extends React.Component {
           </div>
         </div>
 
-        <div className="board">
-          <div className="field"></div>
-          <div className="field"></div>
-          <div className="field"></div>
-
-          <div className="field"></div>
-          <div className="field"></div>
-          <div className="field"></div>
-
-          <div className="field"></div>
-          <div className="field"></div>
-          <div className="field"></div>
-        </div>
+        <Board />
       </div>
     )
   }
