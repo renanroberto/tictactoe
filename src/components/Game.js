@@ -6,10 +6,8 @@ class Field extends React.Component {
   handleClick (e) {
     if (e.target.innerHTML === '') {
       if (this.props.turn%2 !== 0) {
-        // e.target.innerHTML = '&cross;'
         this.props.onMove('x', this.props.place)
       } else {
-        // e.target.innerHTML = '&#10061;'
         this.props.onMove('o', this.props.place)
       }
     }
@@ -77,12 +75,24 @@ class Board extends React.Component {
     return ''
   }
 
+  draw () {
+    let board = this.state.boardState
+
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === '') return 0
+    }
+
+    this.clear()
+    this.props.winner('draw')
+  }
+
   handleMove (player, place) {
     let newBoardState = this.state.boardState
     newBoardState[place-1] = player
 
     this.setState({ boardState: newBoardState })
 
+    this.draw()
     this.winner() ? this.props.winner(this.winner()) : this.props.next()
   }
 
@@ -97,19 +107,14 @@ class Board extends React.Component {
   }
 
   render () {
+    const fields = []
+    for (let i = 0; i < 9; i++) {
+      fields.push(this.renderField(i))
+    }
+
     return (
       <div className="board">
-        { this.renderField(0) }
-        { this.renderField(1) }
-        { this.renderField(2) }
-
-        { this.renderField(3) }
-        { this.renderField(4) }
-        { this.renderField(5) }
-
-        { this.renderField(6) }
-        { this.renderField(7) }
-        { this.renderField(8) }
+        { fields }
       </div>
     )
   }
@@ -118,7 +123,10 @@ class Board extends React.Component {
 export default class Game extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { turn: 1 }
+    this.state = {
+      turn: 1,
+      score: [0, 0]
+    }
 
     this.nextTurn = this.nextTurn.bind(this)
     this.handleWinner = this.handleWinner.bind(this)
@@ -129,16 +137,18 @@ export default class Game extends React.Component {
   }
 
   handleWinner (player) {
-    let win = new Promise(resolve => {
-      setTimeout(() => {
-        alert(player + ' wins!')
-        resolve()
-      }, 100)
-    })
+    let score = this.state.score
+    if (player === 'Player1') this.setState({ score: [score[0]+1, score[1]] })
+    if (player === 'Player2') this.setState({ score: [score[0], score[1]+1] })
 
-    win.then(() => {
-      this.setState({ turn: 1 })
-    })
+    if (player !== 'draw') {
+      alert(player + ' wins!')
+    }
+    else {
+      alert('Draw!')
+    }
+
+    this.setState({ turn: 1 })
   }
 
   render () {
@@ -147,11 +157,11 @@ export default class Game extends React.Component {
         <div className="title">Tic Tac Toe!</div>
 
         <div className="info">
-          <div>Placar: 0 x 0</div>
+          <div>Placar: { this.state.score[0] + ' x ' + this.state.score[1] }</div>
           <div>Turno: { this.state.turn }</div>
           <div>&nbsp;</div>
-          <div>Histórico</div>
-          <div className="history">
+          {/* <div>Histórico</div> */}
+          <div className="history" style={{display: 'none'}}>
             <div>1ª Jogada</div>
             <div>2ª Jogada</div>
             <div>3ª Jogada</div>
